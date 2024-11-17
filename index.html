@@ -14,11 +14,11 @@
             <div class="section">
                 <h2>Investment & Selling Price</h2>
                 <div class="input-group">
-                    <label>Money Invested (KES)</label>
+                    <label for="money-invested">Money Invested (KES)</label>
                     <input type="number" id="money-invested" value="2120000">
                 </div>
                 <div class="input-group">
-                    <label>Assumed Selling Price (KES)</label>
+                    <label for="selling-price">Assumed Selling Price (KES)</label>
                     <input type="number" id="selling-price" value="9500">
                 </div>
             </div>
@@ -26,23 +26,23 @@
             <div class="section">
                 <h2>Landing Prices</h2>
                 <div class="input-group">
-                    <label>Bitumen (KES/L)</label>
+                    <label for="bitumen-price">Bitumen (KES/L)</label>
                     <input type="number" id="bitumen-price" value="95">
                 </div>
                 <div class="input-group">
-                    <label>Dust (KES)</label>
+                    <label for="dust-price">Dust (KES)</label>
                     <input type="number" id="dust-price" value="928">
                 </div>
                 <div class="input-group">
-                    <label>Aggregate 10-14 (KES)</label>
+                    <label for="agg-10-14-price">Aggregate 10-14 (KES)</label>
                     <input type="number" id="agg-10-14-price" value="1044">
                 </div>
                 <div class="input-group">
-                    <label>Aggregate 6-10 (KES)</label>
+                    <label for="agg-6-10-price">Aggregate 6-10 (KES)</label>
                     <input type="number" id="agg-6-10-price" value="812">
                 </div>
                 <div class="input-group">
-                    <label>IDO (KES/L)</label>
+                    <label for="ido-price">IDO (KES/L)</label>
                     <input type="number" id="ido-price" value="90">
                 </div>
             </div>
@@ -50,15 +50,15 @@
             <div class="section">
                 <h2>Mixture Percentages</h2>
                 <div class="input-group">
-                    <label>Dust (%)</label>
+                    <label for="dust-percent">Dust (%)</label>
                     <input type="number" id="dust-percent" value="65">
                 </div>
                 <div class="input-group">
-                    <label>Aggregate 10-14 (%)</label>
+                    <label for="agg-10-14-percent">Aggregate 10-14 (%)</label>
                     <input type="number" id="agg-10-14-percent" value="19">
                 </div>
                 <div class="input-group">
-                    <label>Aggregate 6-10 (%)</label>
+                    <label for="agg-6-10-percent">Aggregate 6-10 (%)</label>
                     <input type="number" id="agg-6-10-percent" value="16">
                 </div>
             </div>
@@ -66,19 +66,19 @@
             <div class="section">
                 <h2>Fixed Costs & Multipliers</h2>
                 <div class="input-group">
-                    <label>Bitumen Multiplier (times)</label>
+                    <label for="bitumen-multiplier">Bitumen Multiplier (times)</label>
                     <input type="number" id="bitumen-multiplier" value="53">
                 </div>
                 <div class="input-group">
-                    <label>IDO Multiplier (times)</label>
+                    <label for="ido-multiplier">IDO Multiplier (times)</label>
                     <input type="number" id="ido-multiplier" value="13">
                 </div>
                 <div class="input-group">
-                    <label>Labour/Diesel Allowance (KES)</label>
+                    <label for="labour-cost">Labour/Diesel Allowance (KES)</label>
                     <input type="number" id="labour-cost" value="565">
                 </div>
                 <div class="input-group">
-                    <label>Rent per 1,000 Tons (KES)</label>
+                    <label for="rent-cost">Rent per 1,000 Tons (KES)</label>
                     <input type="number" id="rent-cost" value="140">
                 </div>
             </div>
@@ -88,92 +88,89 @@
             <button id="calculate-btn">Calculate</button>
         </div>
 
-        <!-- Update the results section in your HTML -->
-<div class="results">
-    <h2>Results</h2>
-    
-    <div class="results-group">
-        <h3>Material Costs</h3>
-        <div class="result-item">
-            <span class="result-label">Dust Cost:</span>
-            <span class="result-value" id="dust-cost">0 KES</span>
+        <div class="results">
+            <h2>Results</h2>
+            
+            <div class="results-group">
+                <h3>Material Costs</h3>
+                <div class="result-item">
+                    <span class="result-label">Dust Cost:</span>
+                    <span class="result-value" id="dust-cost">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Aggregate 10-14 Cost:</span>
+                    <span class="result-value" id="agg-10-14-cost">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Aggregate 6-10 Cost:</span>
+                    <span class="result-value" id="agg-6-10-cost">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Bitumen Cost:</span>
+                    <span class="result-value" id="bitumen-cost">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">IDO Cost:</span>
+                    <span class="result-value" id="ido-cost">0 KES</span>
+                </div>
+            </div>
+
+            <div class="results-group">
+                <h3>Fixed Costs</h3>
+                <div class="result-item">
+                    <span class="result-label">Labour/Diesel Allowance:</span>
+                    <span class="result-value" id="labour-cost-display">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Rent:</span>
+                    <span class="result-value" id="rent-cost-display">0 KES</span>
+                </div>
+            </div>
+
+            <div class="results-group">
+                <h3>Summary</h3>
+                <div class="result-item highlight">
+                    <span class="result-label">Total Material Cost:</span>
+                    <span class="result-value" id="total-material-cost">0 KES</span>
+                </div>
+                <div class="result-item highlight">
+                    <span class="result-label">Total Fixed Cost:</span>
+                    <span class="result-value" id="total-fixed-cost">0 KES</span>
+                </div>
+                <div class="result-item total">
+                    <span class="result-label">Total Production Cost:</span>
+                    <span class="result-value" id="total-cost">0 KES</span>
+                </div>
+            </div>
+
+            <div class="results-group">
+                <h3>Profit Analysis</h3>
+                <div class="result-item">
+                    <span class="result-label">Assumed Selling Price:</span>
+                    <span class="result-value" id="selling-price-display">0 KES</span>
+                </div>
+                <div class="result-item highlight">
+                    <span class="result-label">Gross Profit:</span>
+                    <span class="result-value" id="gross-profit">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Profit Percentage:</span>
+                    <span class="result-value" id="profit-percentage">0%</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Break-Even Point:</span>
+                    <span class="result-value" id="break-even">0 Tons/month</span>
+                </div>
+            </div>
         </div>
-        <div class="result-item">
-            <span class="result-label">Aggregate 10-14 Cost:</span>
-            <span class="result-value" id="agg-10-14-cost">0 KES</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">Aggregate 6-10 Cost:</span>
-            <span class="result-value" id="agg-6-10-cost">0 KES</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">Bitumen Cost:</span>
-            <span class="result-value" id="bitumen-cost">0 KES</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">IDO Cost:</span>
-            <span class="result-value" id="ido-cost">0 KES</span>
+
+        <div class="button-container">
+            <button id="generate-pdf" class="pdf-btn">Download Detailed Breakdown</button>
         </div>
     </div>
 
-    <div class="results-group">
-        <h3>Fixed Costs</h3>
-        <div class="result-item">
-            <span class="result-label">Labour/Diesel Allowance:</span>
-            <span class="result-value" id="labour-cost-display">0 KES</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">Rent (1,000 Tons):</span>
-            <span class="result-value" id="rent-cost-display">0 KES</span>
-        </div>
-    </div>
-
-    <div class="results-group">
-        <h3>Summary</h3>
-        <div class="result-item highlight">
-            <span class="result-label">Total Material Cost:</span>
-            <span class="result-value" id="total-material-cost">0 KES</span>
-        </div>
-        <div class="result-item highlight">
-            <span class="result-label">Total Fixed Cost:</span>
-            <span class="result-value" id="total-fixed-cost">0 KES</span>
-        </div>
-        <div class="result-item total">
-            <span class="result-label">Total Production Cost:</span>
-            <span class="result-value" id="total-cost">0 KES</span>
-        </div>
-    </div>
-
-    <div class="results-group">
-        <h3>Profit Analysis</h3>
-        <div class="result-item">
-            <span class="result-label">Assumed Selling Price:</span>
-            <span class="result-value" id="selling-price-display">0 KES</span>
-        </div>
-        <div class="result-item highlight">
-            <span class="result-label">Gross Profit:</span>
-            <span class="result-value" id="gross-profit">0 KES</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">Profit Percentage:</span>
-            <span class="result-value" id="profit-percentage">0%</span>
-        </div>
-        <div class="result-item">
-            <span class="result-label">Break-Even Point:</span>
-            <span class="result-value" id="break-even">0 Tons/month</span>
-        </div>
-    </div>
-</div>
-    </div>
-
-    <!-- Add this in the head section -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-<!-- Add this just before the closing </div> of the container -->
-<div class="button-container">
-    <button id="generate-pdf" class="pdf-btn">Download Detailed Breakdown</button>
-</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
