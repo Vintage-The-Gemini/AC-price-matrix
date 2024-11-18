@@ -1,45 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize input IDs
     const inputFields = {
-        // Investment & Selling Price
-        moneyInvested: 'money-invested',
+        fixedCosts: 'fixed-costs',
         sellingPrice: 'selling-price',
-        
-        // Landing Prices
         bitumenPrice: 'bitumen-price',
         dustPrice: 'dust-price',
         agg1014Price: 'agg-10-14-price',
         agg610Price: 'agg-6-10-price',
         idoPrice: 'ido-price',
-        
-        // Mixture Percentages
         dustPercent: 'dust-percent',
         agg1014Percent: 'agg-10-14-percent',
         agg610Percent: 'agg-6-10-percent',
-        
-        // Fixed Costs & Multipliers
-        bitumenMultiplier: 'bitumen-multiplier',
-        idoMultiplier: 'ido-multiplier',
+        bitumenLiters: 'bitumen-liters',
+        idoLiters: 'ido-liters',
         labourCost: 'labour-cost',
         rentCost: 'rent-cost'
     };
-
-    // Create input elements if they don't exist
-    Object.entries(inputFields).forEach(([key, id]) => {
-        if (!document.getElementById(id)) {
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.id = id;
-            input.value = '0';
-            // Find the corresponding input-group and append
-            const groups = document.querySelectorAll('.input-group');
-            groups.forEach(group => {
-                if (group.textContent.includes(id.split('-').join(' ').toUpperCase())) {
-                    group.appendChild(input);
-                }
-            });
-        }
-    });
 
     // Add event listeners to all inputs
     Object.values(inputFields).forEach(id => {
@@ -49,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Main calculation function
     function calculateAll() {
         try {
             // Collect input values
@@ -64,8 +39,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 dust: (values.dustPrice * values.dustPercent / 100),
                 agg1014: (values.agg1014Price * values.agg1014Percent / 100),
                 agg610: (values.agg610Price * values.agg610Percent / 100),
-                bitumen: (values.bitumenPrice * values.bitumenMultiplier),
-                ido: (values.idoPrice * values.idoMultiplier)
+                bitumen: (values.bitumenPrice * values.bitumenLiters),
+                ido: (values.idoPrice * values.idoLiters)
             };
 
             // Calculate totals
@@ -76,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate profit metrics
             const grossProfit = values.sellingPrice - totalCost;
             const profitPercentage = values.sellingPrice ? (grossProfit / values.sellingPrice) * 100 : 0;
-            const breakEven = grossProfit > 0 ? values.moneyInvested / grossProfit : 0;
+            const breakEvenPoint = grossProfit > 0 ? values.fixedCosts / grossProfit : 0;
 
             // Update display
             updateDisplay('dust-cost', materialCosts.dust);
@@ -92,19 +67,28 @@ document.addEventListener('DOMContentLoaded', function() {
             updateDisplay('selling-price-display', values.sellingPrice);
             updateDisplay('gross-profit', grossProfit);
             updateDisplay('profit-percentage', profitPercentage, '%');
-            updateDisplay('break-even', breakEven, ' Tons/month');
+            updateDisplay('break-even', breakEvenPoint, ' Tons/month');
 
             // Validate percentages
-            const totalPercentage = values.dustPercent + values.agg1014Percent + values.agg610Percent;
-            if (totalPercentage !== 100) {
-                console.warn(`Material percentages sum to ${totalPercentage}%, should be 100%`);
-            }
+            validatePercentages(values);
         } catch (error) {
             console.error('Calculation Error:', error);
         }
     }
 
-    // Helper function to update display values
+    function validatePercentages(values) {
+        const totalPercentage = values.dustPercent + values.agg1014Percent + values.agg610Percent;
+        const resultsElement = document.querySelector('.results');
+        if (resultsElement) {
+            if (totalPercentage !== 100) {
+                resultsElement.classList.add('percentage-warning');
+                console.warn(`Material percentages sum to ${totalPercentage}%, should be 100%`);
+            } else {
+                resultsElement.classList.remove('percentage-warning');
+            }
+        }
+    }
+
     function updateDisplay(id, value, suffix = ' KES') {
         const element = document.getElementById(id);
         if (element) {
@@ -114,198 +98,198 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Initial calculation
-    calculateAll();
-
-    // PDF Generation Setup
-    const pdfButton = document.getElementById('generate-pdf');
-    if (pdfButton) {
-        pdfButton.addEventListener('click', generatePDF);
-    }
-});
-
-// PDF Generation Function
-function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    if (!jsPDF) {
-        console.error('jsPDF library not loaded');
-        alert('PDF generation library not loaded. Please check your configuration.');
-        return;
-    }
-
-    try {
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
-        // Set document properties
+    
         doc.setProperties({
             title: 'Asphalt Concrete Price Matrix Breakdown',
             subject: 'Price Breakdown Report',
             author: 'Trapoz System',
             creator: 'Price Matrix Calculator'
         });
-
-        // Add logo (with error handling)
+    
+        // Header
         try {
-            doc.addImage('trapoz logo.png', 'PNG', 15, 10, 30, 30);
+            // Center and resize logo
+            doc.addImage('trapoz logo.png', 'PNG', 85, 10, 40, 20);
         } catch (error) {
-            console.log('Logo loading failed, continuing without logo');
+            console.log('Logo loading failed');
         }
-
-        // Set initial y position after logo
-        let yPos = 50;
-
-        // Add title
+    
+        let yPos = 40;
+    
+        // Title Section
         doc.setFontSize(20);
         doc.setTextColor(33, 33, 33);
         doc.text('Asphalt Concrete Price Matrix Breakdown', 105, yPos, { align: 'center' });
         
-        // Add date
         doc.setFontSize(10);
         doc.setTextColor(100, 100, 100);
-        doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, yPos + 10, { align: 'center' });
-
-        yPos += 30;
-
-        // Get values safely with error handling
-        const getValue = (id) => {
-            const element = document.getElementById(id);
-            return element ? element.value || element.textContent || '0' : '0';
-        };
-
-        // Key Financial Parameters Table
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, yPos + 8, { align: 'center' });
+    
+        yPos += 20;
+    
+        // Key Parameters Table
         doc.autoTable({
             startY: yPos,
-            head: [['Key Financial Parameters', 'Value']],
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [255, 165, 0], 
+                textColor: [0, 0, 0],
+                fontStyle: 'bold'
+            },
+            head: [['Key Parameters', 'Value']],
             body: [
-                ['Assumed Selling Price', `${getValue('selling-price')} KES`],
-                ['Money Invested', `${getValue('money-invested')} KES`],
+                ['Fixed Costs', `${document.getElementById('fixed-costs').value} KES`],
+                ['Assumed Selling Price', `${document.getElementById('selling-price').value} KES`],
             ],
-            headStyles: { fillColor: [255, 165, 0], textColor: [0, 0, 0] },
-            styles: { fontSize: 12 },
+            styles: { fontSize: 10, cellPadding: 5 },
             margin: { top: 15 }
         });
-
-        yPos = doc.lastAutoTable.finalY + 15;
-
-        // Cost Breakdown Table
+    
+        yPos = doc.lastAutoTable.finalY + 10;
+    
+        // Material Costs Table
         doc.autoTable({
             startY: yPos,
-            head: [['Material/Cost Component', 'Base Price', 'Factor', 'Calculated Cost']],
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [255, 140, 0], 
+                textColor: [0, 0, 0],
+                fontStyle: 'bold'
+            },
+            head: [['Material', 'Base Price', 'Volume/Percentage', 'Cost']],
             body: [
                 ['Bitumen', 
-                 `${getValue('bitumen-price')} KES`,
-                 `${getValue('bitumen-multiplier')} times`,
-                 getValue('bitumen-cost')],
+                 `${document.getElementById('bitumen-price').value} KES/L`,
+                 `${document.getElementById('bitumen-liters').value} L`,
+                 document.getElementById('bitumen-cost').textContent],
                 ['Dust', 
-                 `${getValue('dust-price')} KES`,
-                 `${getValue('dust-percent')}%`,
-                 getValue('dust-cost')],
+                 `${document.getElementById('dust-price').value} KES`,
+                 `${document.getElementById('dust-percent').value}%`,
+                 document.getElementById('dust-cost').textContent],
                 ['Aggregate 10-14',
-                 `${getValue('agg-10-14-price')} KES`,
-                 `${getValue('agg-10-14-percent')}%`,
-                 getValue('agg-10-14-cost')],
+                 `${document.getElementById('agg-10-14-price').value} KES`,
+                 `${document.getElementById('agg-10-14-percent').value}%`,
+                 document.getElementById('agg-10-14-cost').textContent],
                 ['Aggregate 6-10',
-                 `${getValue('agg-6-10-price')} KES`,
-                 `${getValue('agg-6-10-percent')}%`,
-                 getValue('agg-6-10-cost')],
+                 `${document.getElementById('agg-6-10-price').value} KES`,
+                 `${document.getElementById('agg-6-10-percent').value}%`,
+                 document.getElementById('agg-6-10-cost').textContent],
                 ['IDO',
-                 `${getValue('ido-price')} KES`,
-                 `${getValue('ido-multiplier')} times`,
-                 getValue('ido-cost')],
-                ['Labour/Diesel Allowance',
-                 `${getValue('labour-cost')} KES`,
-                 'Fixed Cost',
-                 getValue('labour-cost')],
-                ['Rent per 1,000 Tons',
-                 `${getValue('rent-cost')} KES`,
-                 'Fixed Cost',
-                 getValue('rent-cost')],
+                 `${document.getElementById('ido-price').value} KES/L`,
+                 `${document.getElementById('ido-liters').value} L`,
+                 document.getElementById('ido-cost').textContent],
             ],
-            headStyles: { fillColor: [255, 140, 0], textColor: [0, 0, 0] },
+            styles: { fontSize: 10, cellPadding: 5 },
             margin: { top: 15 }
         });
-
-        yPos = doc.lastAutoTable.finalY + 15;
-
-        // Profit Analysis Table
+    
+        yPos = doc.lastAutoTable.finalY + 10;
+    
+        // Fixed Costs Table
         doc.autoTable({
             startY: yPos,
-            head: [['Profit Analysis', 'Amount']],
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [255, 120, 0], 
+                textColor: [0, 0, 0],
+                fontStyle: 'bold'
+            },
+            head: [['Fixed Cost Component', 'Amount']],
             body: [
-                ['Total Production Cost', getValue('total-cost')],
-                ['Assumed Selling Price', `${getValue('selling-price')} KES`],
-                ['Gross Profit per Unit', getValue('gross-profit')],
-                ['Profit Percentage', getValue('profit-percentage')],
+                ['Labour/Diesel Allowance', document.getElementById('labour-cost-display').textContent],
+                ['Rent', document.getElementById('rent-cost-display').textContent],
+                ['Total Fixed Cost', document.getElementById('total-fixed-cost').textContent],
             ],
-            headStyles: { fillColor: [255, 120, 0], textColor: [0, 0, 0] },
-            styles: { fontSize: 12 },
+            styles: { fontSize: 10, cellPadding: 5 },
             margin: { top: 15 }
         });
-
-        yPos = doc.lastAutoTable.finalY + 15;
-
-        // Break-even Analysis Table
+    
+        yPos = doc.lastAutoTable.finalY + 10;
+    
+        // Summary Table
+        const totalCost = document.getElementById('total-cost').textContent;
+        const sellingPrice = document.getElementById('selling-price-display').textContent;
+        const grossProfit = document.getElementById('gross-profit').textContent;
+        const profitPercentage = document.getElementById('profit-percentage').textContent;
+        const breakEven = document.getElementById('break-even').textContent;
+        const fixedCosts = document.getElementById('fixed-costs').value;
+    
         doc.autoTable({
             startY: yPos,
-            head: [['Break-even Analysis', 'Value']],
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [255, 100, 0], 
+                textColor: [0, 0, 0],
+                fontStyle: 'bold'
+            },
+            head: [['Final Analysis', 'Amount']],
             body: [
-                ['Money Invested', `${getValue('money-invested')} KES`],
-                ['Gross Profit per Unit', getValue('gross-profit')],
-                ['Break-even Point', getValue('break-even')],
-                ['Break-even Calculation', `${getValue('money-invested')} KES ÷ ${getValue('gross-profit')} = ${getValue('break-even')}`]
+                ['Total Material Cost', document.getElementById('total-material-cost').textContent],
+                ['Total Production Cost', totalCost],
+                ['Selling Price', sellingPrice],
+                ['Gross Profit', grossProfit],
+                ['Profit Percentage', profitPercentage],
+                ['Break-Even Point', breakEven],
             ],
-            headStyles: { fillColor: [255, 100, 0], textColor: [0, 0, 0] },
-            styles: { fontSize: 12 },
+            styles: { fontSize: 10, cellPadding: 5 },
             margin: { top: 15 }
         });
-
-        // Add summary note
+    
         yPos = doc.lastAutoTable.finalY + 15;
-        doc.setFontSize(10);
-        doc.setTextColor(80, 80, 80);
-        const summary = `Note: This breakdown shows how the profit of ${getValue('gross-profit')} per unit is calculated by subtracting the total production cost (${getValue('total-cost')}) from the assumed selling price of ${getValue('selling-price')} KES. The break-even point indicates the number of tons needed to recover the invested amount of ${getValue('money-invested')} KES.`;
+    
+        // Break-even explanation
+        doc.setFontSize(11);
+        doc.setTextColor(60, 60, 60);
+        doc.setFont(undefined, 'bold');
+        doc.text('Break-Even Analysis Explanation:', 15, yPos);
         
-        doc.setFont(undefined, 'italic');
-        const splitText = doc.splitTextToSize(summary, 180);
-        doc.text(splitText, 15, yPos);
-
-        // Add footer with page numbers
+        yPos += 10;
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(10);
+        
+        const explanation = [
+            `The break-even point of ${breakEven} shows the number of tons needed to recover the fixed costs of KES ${fixedCosts}.`,
+            `This is calculated by dividing the fixed costs (${fixedCosts} KES) by the gross profit per unit (${grossProfit}).`,
+            `At this production level, the total revenue will equal total costs, resulting in zero profit.`,
+            `Any production beyond this point will generate profit, while production below this point will result in a loss.`
+        ];
+    
+        explanation.forEach(line => {
+            doc.text(line, 15, yPos);
+            yPos += 7;
+        });
+    
+        // Footer
         const pageCount = doc.internal.getNumberOfPages();
         for(let i = 1; i <= pageCount; i++) {
             doc.setPage(i);
             doc.setFontSize(10);
             doc.setTextColor(100, 100, 100);
-            
-            // Footer text
             doc.text(
-                'Trapoz System - Asphalt Concrete Price Matrix Calculator',
+                'Trapoz System - Price Matrix Calculator',
                 105,
                 doc.internal.pageSize.height - 10,
                 { align: 'center' }
             );
-            
-            // Page numbers
             doc.text(
                 `Page ${i} of ${pageCount}`,
                 doc.internal.pageSize.width - 20,
                 doc.internal.pageSize.height - 10
             );
         }
-
-        // Add watermark
-        doc.setTextColor(230, 230, 230);
-        doc.setFontSize(60);
-        doc.text(
-            'TRAPOZ',
-            105,
-            doc.internal.pageSize.height / 2,
-            { align: 'center', angle: 45 }
-        );
-
-        // Save the PDF
-        doc.save('asphalt-concrete-price-breakdown.pdf');
-    } catch (error) {
-        console.error('PDF Generation Error:', error);
-        alert('An error occurred while generating the PDF. Please try again.');
+    
+        doc.save('price-matrix-breakdown.pdf');
     }
-}
+
+    // Setup event listeners
+    const pdfButton = document.getElementById('generate-pdf');
+    if (pdfButton) {
+        pdfButton.addEventListener('click', generatePDF);
+    }
+
+    // Initial calculation
+    calculateAll();
+});
