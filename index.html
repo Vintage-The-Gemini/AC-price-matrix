@@ -27,23 +27,27 @@
                 <h2>Landed Prices</h2>
                 <div class="input-group">
                     <label for="bitumen-price">Bitumen (KES/L)</label>
-                    <input type="number" id="bitumen-price" value="95">
+                    <input type="number" id="bitumen-price" value="95" readonly>
                 </div>
                 <div class="input-group">
                     <label for="dust-price">Dust (KES)</label>
-                    <input type="number" id="dust-price" value="928">
+                    <input type="number" id="dust-price" value="928" readonly>
                 </div>
                 <div class="input-group">
                     <label for="agg-10-14-price">Aggregate 10-14 (KES)</label>
-                    <input type="number" id="agg-10-14-price" value="1044">
+                    <input type="number" id="agg-10-14-price" value="1044" readonly>
                 </div>
                 <div class="input-group">
                     <label for="agg-6-10-price">Aggregate 6-10 (KES)</label>
-                    <input type="number" id="agg-6-10-price" value="812">
+                    <input type="number" id="agg-6-10-price" value="812" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="agg-14-20-price">Aggregate 14-20 (KES)</label>
+                    <input type="number" id="agg-14-20-price" value="1120" readonly>
                 </div>
                 <div class="input-group">
                     <label for="ido-price">IDO (KES/L)</label>
-                    <input type="number" id="ido-price" value="90">
+                    <input type="number" id="ido-price" value="90" readonly>
                 </div>
             </div>
 
@@ -51,15 +55,19 @@
                 <h2>Mixture Percentages</h2>
                 <div class="input-group">
                     <label for="dust-percent">Dust (%)</label>
-                    <input type="number" id="dust-percent" value="65">
+                    <input type="number" id="dust-percent" value="65" min="0" max="100">
                 </div>
                 <div class="input-group">
                     <label for="agg-10-14-percent">Aggregate 10-14 (%)</label>
-                    <input type="number" id="agg-10-14-percent" value="19">
+                    <input type="number" id="agg-10-14-percent" value="19" min="0" max="100">
                 </div>
                 <div class="input-group">
                     <label for="agg-6-10-percent">Aggregate 6-10 (%)</label>
-                    <input type="number" id="agg-6-10-percent" value="16">
+                    <input type="number" id="agg-6-10-percent" value="16" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label for="agg-14-20-percent">Aggregate 14-20 (%)</label>
+                    <input type="number" id="agg-14-20-percent" value="0" min="0" max="100">
                 </div>
             </div>
 
@@ -100,6 +108,10 @@
                 <div class="result-item">
                     <span class="result-label">Aggregate 6-10 Cost:</span>
                     <span class="result-value" id="agg-6-10-cost">0 KES</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Aggregate 14-20 Cost:</span>
+                    <span class="result-value" id="agg-14-20-cost">0 KES</span>
                 </div>
                 <div class="result-item">
                     <span class="result-label">Bitumen Cost:</span>
